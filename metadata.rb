@@ -1,0 +1,16 @@
+name             'cheflab'
+maintainer       'The Authors'
+maintainer_email 'you@example.com'
+license          'all_rights'
+description      'Installs/Configures cheflab'
+long_description 'Installs/Configures cheflab'
+version          '0.1.0'
+
+depends 'chef-server12'
+depends 'git'
+depends 'java'
+depends 'sudo'
+depends 'jenkins'
+depends 'chef-dk'
+depends 'gitlab'
+

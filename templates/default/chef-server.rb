@@ -1,0 +1,13 @@
+# This file was created by Chef - manual changes may be overwritten
+
+<% if node['chef_server12']['analytics'] -%>
+# dark_launch['actions'] = true
+rabbitmq['vip'] = "<%= @chef_server_ipaddress %>"
+rabbitmq['node_ip_address'] = '0.0.0.0'
+
+oc_id['applications'] = {
+  'analytics' => {
+    'redirect_uri' =>  "<%= @chef_analytics_ipaddress %>"
+  }
+}
+<% end -%>

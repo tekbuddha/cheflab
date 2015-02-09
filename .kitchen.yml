@@ -1,0 +1,134 @@
+<%
+chef_server_ip = ENV['CHEF_SERVER_IP'] ? ENV['CHEF_SERVER_IP'] : '192.168.33.33'
+chef_analytics_ip = ENV['CHEF_ANALYTICS_IP'] ? ENV['CHEF_ANALYTICS_IP'] : '192.168.33.34'
+chef_supermarket_ip = ENV['CHEF_SUPERMARKET_IP'] ? ENV['CHEF_SUPERMARKET_IP'] : '192.168.33.35'
+chef_node1_ip = ENV['CHEF_NODE1_IP'] ? ENV['CHEF_NODE1_IP'] : '192.168.33.53'
+chef_node2_ip = ENV['CHEF_NODE2_IP'] ? ENV['CHEF_NODE2_IP'] : '192.168.33.54'
+gitlab_server_ip = ENV['GITLAB_SERVER_IP'] ? ENV['GITLAB_SERVER_IP'] : '192.168.33.64'
+jenkins_server_ip = ENV['JENKINS_SERVER_IP'] ? ENV['JENKINS_SERVER_IP'] : '192.168.33.65'
+%>
+---
+driver:
+  name: vagrant
+
+provisioner:
+  name: chef_zero
+
+platforms:
+  - name: centos-6.6
+    driver:
+      box: opscode-centos-6.6
+    attributes:
+      chef_server12:
+        topology: 'standalone'
+        api_fqdn: 'chefserver.local'
+        write_hosts: true
+        backend:
+          fqdn: 'chefserver.local'
+          ipaddress: "<%= chef_server_ip %>"
+          analytics_fqdn: 'analytics.local'
+          analytics_ipaddress: "<%= chef_analytics_ip %>"
+          supermarket_fqdn: 'supermarket.local'
+          supermarket_ipaddress: "<%= chef_supermarket_ip %>"
+        nodes:
+          node1.local: "<%= chef_node1_ip %>"
+          node2.local: "<%= chef_node2_ip %>"
+
+suites:
+  - name: node1
+    driver:
+      vm_hostname: node1.local
+      network:
+      - ["private_network", {ip: "<%= chef_node1_ip %>"}]
+      customize:
+        memory: 512
+    run_list:
+      - recipe[cheflab::node]
+    attributes:
+      chef_server12:
+        node_fqdn: node1.local
+        node_ipaddress: "<%= chef_node1_ip %>"
+
+  - name: node2
+    driver:
+      vm_hostname: node2.local
+      network:
+      - ["private_network", {ip: "<%= chef_node2_ip %>"}]
+      customize:
+        memory: 512
+    run_list:
+      - recipe[cheflab::node]
+    attributes:
+      chef_server12:
+        node_fqdn: node2.local
+        node_ipaddress: "<%= chef_node2_ip %>"
+
+  - name: analytics
+    driver:
+      vm_hostname: analytics.local
+      network:
+      - ["private_network", {ip: "<%= chef_analytics_ip %>"}]
+      customize:
+        memory: 1536
+    run_list:
+      - recipe[cheflab::analytics]
+    attributes:
+
+# Placeholder for supermarket...
+  # - name: supermarket
+  #   driver:
+  #     vm_hostname: supermarket.local
+  #     network:
+  #     - ["private_network", {ip: "<%= chef_supermarket_ip %>"}]
+  #     customize:
+  #       memory: 1536
+  #   run_list:
+  #     - recipe[cheflab::default]
+  #   attributes:
+  #     chef_server12:
+  #       node_fqdn: supermarket.local
+  #       node_ipaddress: "<%= chef_supermarket_ip %>"
+
+  - name: chefserver
+    driver:
+      vm_hostname: chefserver.local
+      network:
+      - ["private_network", {ip: "<%= chef_server_ip %>"}]
+      customize:
+        memory: 1536
+    run_list:
+      - recipe[cheflab::chef-server]
+    attributes:
+
+# Username: root 
+# Password: 5iveL!fe
+  - name: gitlab
+    driver:
+      vm_hostname: gitlab.local
+      network:
+      - ["private_network", {ip: "<%= gitlab_server_ip %>"}]
+      customize:
+        memory: 512
+    run_list:
+      - recipe[cheflab::gitlab]
+    attributes:
+##### REMOVE
+      # chef_server12:
+      #   node_fqdn: gitlab.local
+      #   node_ipaddress: "<%= gitlab_server_ip %>"
+
+  - name: jenkins
+    driver:
+      vm_hostname: jenkins.local
+      network:
+      - ["private_network", {ip: "<%= jenkins_server_ip %>"}]
+      customize:
+        memory: 512
+    run_list:
+      - recipe[cheflab::jenkins]
+      - recipe[cheflab::chefdk]
+    attributes:
+##### REMOVE
+      # chef_server12:
+      #   node_fqdn: jenkins.local
+      #   node_ipaddress: "<%= jenkins_server_ip %>"
