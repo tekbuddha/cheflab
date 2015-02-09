@@ -67,7 +67,7 @@ The `jenkins` recipe within is derived from Stephen Lauck's [pipeline](https://g
 
 There are other tuneables in `chef-server.rb` for organization name, adminsitrator user/password, etc. 
 
-## Local Hosts Setup
+## Usage
 
 I keep the following in my `/etc/hosts` file:
 
@@ -82,6 +82,9 @@ I keep the following in my `/etc/hosts` file:
 ```
 
 Adjust accordingly if you alter the IPs at the top of the `.kitchen.yml`.
+
+The `.kitchen.yml` has suites ordered properly for a clean build. You should be able to `kitchen converge` and the result will be all the nodes and services up and running. Build time on my MacBook is roughly 25min for the entire suite.
+
 
 ## Documentation
 
