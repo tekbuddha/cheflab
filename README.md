@@ -21,9 +21,11 @@ My goal is to have a quick and easy manner to standup:
 - Two (2) Test Nodes for applying recipes
 - Gitlab for chef-repo, custom cookbooks, etc
 - Jenkins for auto-build/test/deploy capabilities **STARTED/NOT YET COMPLETE**
-- ELK Stack
+- ELK Stack **TODO**
 - Graphite/Grafana (thanks to Scott Ford for the lead on Grafana!)
-- Nagios/Zenoss/something for service availability checks
+    - graphite runs on :8080
+    - grafana runs on :3000
+- Nagios/Zenoss/something for service availability checks **TODO**
 
 Inspiration for this bundle has come from being on-site with various customers, conversation with fellow engineers, and a desire to have an all-in-one way to quickly demonstrate a way that many of us now find to be the prescriptive way to work with and support Chef.
 
@@ -79,6 +81,8 @@ I keep the following in my `/etc/hosts` file:
 192.168.33.54   node2.local
 192.168.33.64   gitlab.local
 192.168.33.65   jenkins.local
+192.168.33.66   graphite.local
+192.168.33.67   grafana.local
 ```
 
 Adjust accordingly if you alter the IPs at the top of the `.kitchen.yml`.
